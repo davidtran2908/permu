@@ -12,7 +12,7 @@ tau <- c(0, 0.01, 0.1, 0.3, 0.5, 0.7, 1)
 tau2 <- tau^2
 n.rep <- 1000
 n.subject <- c("verysmall", "small", "medium")
-n<-c(4, 10)
+n<-c(4)
 
 ## simulation
 df.ma.lst <- list(NULL)
@@ -38,9 +38,8 @@ for (n in c(4)) {
       #ni <- round(runif(n, min=30, max=300))
       ni <- round(runif(n, min=100, max=200))
     }
-    #sigma <- sqrt(1/ni)
-    #sigma <- uisd*rep(1, n)
-    sigma <- c(0.94, 0.89, 0.86, 1.39)
+    #sigma <- uisd*rep(1, n) ## residual sd=1
+    sigma <- c(0.94, 0.89, 0.86, 1.39) ## different residual sd
     sigma2 <- sigma^2
     p.treat <- runif(n, min=0.5, max=0.7)
     xi <- y0i <- list(NULL)
@@ -55,7 +54,7 @@ for (n in c(4)) {
           beta2 <- rnorm(n, mean=theta, sd=tau[k]) ## norm
 
           for (i in 1:n) {
-            epsilon.i <- rnorm(ni[i], mean=0, sd=sigma[i]) 
+            #epsilon.i <- rnorm(ni[i], mean=0, sd=sigma[i]) ## normal
             #epsilon.i <- (sigma[i]/sqrt(3))*rt(ni[i], df=3) ## student t
             #epsilon.i <- (sigma[i]/sqrt((exp(1)-1)*exp(1)))*(rlnorm(ni[i])-exp(1/2)) ## lognormal(0, 1)
             yi <- beta0[i] + beta1[i]*y0i[[i]] + beta2[i]*xi[[i]] + epsilon.i
@@ -64,10 +63,10 @@ for (n in c(4)) {
             df.ma <- rbind(df.ma, df.trial)
           } 
           df.ma.lst[[b]] <- df.ma 
-          #save.image(paste("sim_dat_epsilonnorm_theta", theta, "_n", n, "_tau", tau[k], "_n.subject", n.subject[j], ".RData", sep=""))
-          #save.image(paste("sim_dat_epsilonlognorm_theta", theta, "_n", n, "_tau", tau[k], "_n.subject", n.subject[j], ".RData", sep=""))
-          save.image(paste("sim_dat_diffuisd_theta", theta, "_n", n, "_tau", tau[k], "_n.subject", n.subject[j], ".RData", sep=""))
-          #save.image(paste("sim_dat_epsilont_theta", theta, "_n", n, "_tau", tau[k], "_n.subject", n.subject[j], ".RData", sep=""))
+          #save.image(paste("sim_dat_epsilonnorm_theta", theta, "_n", n, "_tau", tau[k], "_n.subject", n.subject[j], ".RData", sep="")) ## norm
+          #save.image(paste("sim_dat_epsilonlognorm_theta", theta, "_n", n, "_tau", tau[k], "_n.subject", n.subject[j], ".RData", sep="")) ## lognormal(0, 1)
+          #save.image(paste("sim_dat_diffuisd_theta", theta, "_n", n, "_tau", tau[k], "_n.subject", n.subject[j], ".RData", sep="")) ## different residual sd
+          #save.image(paste("sim_dat_epsilont_theta", theta, "_n", n, "_tau", tau[k], "_n.subject", n.subject[j], ".RData", sep="")) ## student t
           print(b)
         }  
       }
